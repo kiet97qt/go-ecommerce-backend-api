@@ -4,14 +4,39 @@ import (
 	"log"
 	"os"
 
+	"go-ecommerce-backend-api/pkg/settings"
+
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
+	"gopkg.in/natefinch/lumberjack.v2"
 )
 
-var logger *zap.Logger
+var (
+	logger      *zap.Logger
+	loggingConf settings.Logging
+)
 
-// init configures the global zap logger instance.
+// init configures the global zap logger instance with default values.
+// It can be reconfigured later via Setup.
 func init() {
+	// default config (can be overridden from YAML via Setup)
+	loggingConf = settings.Logging{
+		Filename:   "logs/app.log",
+		MaxSize:    10,
+		MaxBackups: 5,
+		MaxAge:     30,
+		Compress:   true,
+	}
+	buildLogger()
+}
+
+// Setup allows configuring the logger using values loaded from configuration.
+func Setup(conf settings.Logging) {
+	loggingConf = conf
+	buildLogger()
+}
+
+func buildLogger() {
 	encoder := getEncoderLog()
 	writer := getWriterSync()
 
@@ -38,10 +63,9 @@ func getEncoderLog() zapcore.Encoder {
 	return zapcore.NewJSONEncoder(cfg)
 }
 
-// getWriterSync configures where logs are written (here: logs/app.log file).
+// getWriterSync configures where logs are written (here: logs/app.log file via lumberjack).
 func getWriterSync() zapcore.WriteSyncer {
-	const logDir = "logs"
-	const logFile = "logs/app.log"
+	logDir := "logs"
 
 	if _, err := os.Stat(logDir); os.IsNotExist(err) {
 		if err := os.MkdirAll(logDir, 0o755); err != nil {
@@ -49,12 +73,18 @@ func getWriterSync() zapcore.WriteSyncer {
 		}
 	}
 
-	file, err := os.OpenFile(logFile, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0o644)
-	if err != nil {
-		log.Fatalf("failed to open log file: %v", err)
+	lumberjackLogger := &lumberjack.Logger{
+		Filename:   loggingConf.Filename,
+		MaxSize:    loggingConf.MaxSize,    // megabytes
+		MaxBackups: loggingConf.MaxBackups, // number of files
+		MaxAge:     loggingConf.MaxAge,     // days
+		Compress:   loggingConf.Compress,   // gzip old logs
 	}
 
-	return zapcore.NewMultiWriteSyncer(zapcore.AddSync(file), zapcore.AddSync(os.Stdout))
+	return zapcore.NewMultiWriteSyncer(
+		zapcore.AddSync(lumberjackLogger),
+		zapcore.AddSync(os.Stdout),
+	)
 }
 
 // GetLogger returns the shared zap logger instance for use in other packages.

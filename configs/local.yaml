@@ -14,3 +14,19 @@ databases:
 security:
   jwt:
     key: abc123
+mysql:
+  host: localhost
+  port: 33306
+  user: root
+  password: root
+  dbname: shopDev
+  maxIdleConns: 10
+  maxOpenConns: 100
+  connMaxLifetime: 3600
+
+logging:
+  filename: logs/app.log
+  maxSize: 10
+  maxBackups: 5
+  maxAge: 30
+  compress: true
