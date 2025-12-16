@@ -5,6 +5,8 @@ import (
 	"fmt"
 
 	"go-ecommerce-backend-api/internal/models"
+
+	"github.com/google/uuid"
 )
 
 // UserService exposes read operations for user resources.
@@ -20,8 +22,8 @@ type userService struct {
 func NewUserService() UserService {
 	return &userService{
 		users: map[string]models.User{
-			"1": {ID: "1", Name: "Alice Nguyen", Email: "alice@example.com"},
-			"2": {ID: "2", Name: "Bob Tran", Email: "bob@example.com"},
+			"1": {ID: uuid.New(), Username: "Alice Nguyen"},
+			"2": {ID: uuid.New(), Username: "Bob Tran"},
 		},
 	}
 }

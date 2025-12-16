@@ -15,8 +15,7 @@ func TestGetUserByID_Found(t *testing.T) {
 	require.NoError(t, err)
 	require.NotNil(t, user)
 	require.Equal(t, "1", user.ID)
-	require.Equal(t, "Alice Nguyen", user.Name)
-	require.Equal(t, "alice@example.com", user.Email)
+	require.Equal(t, "Alice Nguyen", user.Username)
 }
 
 func TestGetUserByID_NotFound(t *testing.T) {
