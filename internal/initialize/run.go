@@ -15,6 +15,7 @@ func Run() {
 	InitLogger()
 	global.Logger.Info("config loaded", zap.Any("config", config))
 	InitMySQL()
+	InitRedis()
 	InitRouter()
 	router := InitRouter()
 
