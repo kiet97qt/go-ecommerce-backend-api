@@ -14,11 +14,11 @@ var logger = loggers.GetLogger()
 
 // UserController provides handlers for user resources.
 type UserController struct {
-	userService service.UserService
+	userService service.IUserService
 }
 
 // NewUserController binds a user controller to a service.
-func NewUserController(userService service.UserService) *UserController {
+func NewUserController(userService service.IUserService) *UserController {
 	return &UserController{userService: userService}
 }
 

@@ -1,9 +1,8 @@
 package initialize
 
 import (
-	"go-ecommerce-backend-api/internal/controller"
 	"go-ecommerce-backend-api/internal/routers"
-	"go-ecommerce-backend-api/internal/service"
+	"go-ecommerce-backend-api/internal/wire"
 
 	"github.com/gin-gonic/gin"
 )
@@ -11,11 +10,13 @@ import (
 func InitRouter() *gin.Engine {
 	router := gin.Default()
 
+	pingCtrl, err := wire.InitPingController()
+	if err != nil {
+		panic(err)
+	}
+
 	manageRouter := routers.RouterGroupApp.Manage
 	userRouter := routers.RouterGroupApp.User
-
-	pingSvc := service.NewPingService()
-	pingCtrl := controller.NewPingController(pingSvc)
 
 	MainRouter := router.Group("/v1/api")
 	{

@@ -10,7 +10,7 @@ import (
 )
 
 // UserService exposes read operations for user resources.
-type UserService interface {
+type IUserService interface {
 	GetUserByID(ctx context.Context, id string) (*models.User, error)
 }
 
@@ -19,7 +19,7 @@ type userService struct {
 }
 
 // NewUserService returns a mock user service populated with sample data.
-func NewUserService() UserService {
+func NewUserService() IUserService {
 	return &userService{
 		users: map[string]models.User{
 			"1": {ID: uuid.New(), Username: "Alice Nguyen"},

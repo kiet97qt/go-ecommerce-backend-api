@@ -1,9 +1,8 @@
 package user
 
 import (
-	"go-ecommerce-backend-api/internal/controller"
 	"go-ecommerce-backend-api/internal/middlewares"
-	"go-ecommerce-backend-api/internal/service"
+	"go-ecommerce-backend-api/internal/wire"
 
 	"github.com/gin-gonic/gin"
 )
@@ -13,8 +12,10 @@ type UserRouter struct {
 
 func (ur *UserRouter) InitUserRouter(router *gin.RouterGroup) {
 
-	userSvc := service.NewUserService()
-	userCtrl := controller.NewUserController(userSvc)
+	userCtrl, err := wire.InitUserController()
+	if err != nil {
+		panic(err)
+	}
 
 	// public routes
 	userRouterPublic := router.Group("/user")
