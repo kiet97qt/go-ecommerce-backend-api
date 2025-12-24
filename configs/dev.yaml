@@ -1,0 +1,43 @@
+server:
+  port: 8080
+
+databases:
+  - host: mysql
+    port: 3306
+    user: admin
+    password: admin
+    dbname: shopDev
+  - host: redis
+    port: 6379
+    user: admin
+    password: admin
+    dbname: userDev
+
+security:
+  jwt:
+    key: abc123
+
+mysql:
+  host: mysql
+  port: 3306
+  user: root
+  password: root
+  dbname: shopDev
+  maxIdleConns: 10
+  maxOpenConns: 100
+  connMaxLifetime: 3600
+
+logging:
+  filename: logs/app.log
+  maxSize: 10
+  maxBackups: 5
+  maxAge: 30
+  compress: true
+
+redis:
+  host: redis
+  port: 6379
+  password: ""
+  db: 0
+
+

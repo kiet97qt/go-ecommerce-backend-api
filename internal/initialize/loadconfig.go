@@ -1,19 +1,26 @@
 package initialize
 
 import (
-	"go-ecommerce-backend-api/global"
 	"log"
+	"os"
+
+	"go-ecommerce-backend-api/global"
 
 	"github.com/spf13/viper"
 )
 
 func LoadConfig() {
-	viper.SetConfigName("local")
+	env := os.Getenv("APP_ENV")
+	if env == "" {
+		env = "local"
+	}
+
+	viper.SetConfigName(env)
 	viper.SetConfigType("yaml")
 	viper.AddConfigPath("./configs/")
 
 	if err := viper.ReadInConfig(); err != nil {
-		log.Fatalf("failed to read config: %v", err)
+		log.Fatalf("failed to read config %s: %v", env, err)
 	}
 
 	if err := viper.Unmarshal(&global.Config); err != nil {

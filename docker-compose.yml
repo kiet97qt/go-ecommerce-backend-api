@@ -1,6 +1,25 @@
 version: "3.9"
 
 services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: go-ecommerce-app
+    restart: unless-stopped
+    environment:
+      APP_ENV: dev
+      GIN_MODE: release
+    ports:
+      - "8080:8080"
+    depends_on:
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_started
+    networks:
+      - app-net
+
   mysql:
     image: mysql:8.0
     container_name: go-ecommerce-mysql
@@ -13,6 +32,13 @@ services:
     volumes:
       - mysql_data:/var/lib/mysql
     command: ["--default-authentication-plugin=mysql_native_password"]
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-proot"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    networks:
+      - app-net
 
   redis:
     image: redis:7-alpine
@@ -21,8 +47,13 @@ services:
     ports:
       - "6379:6379"
     command: ["redis-server", "--appendonly", "yes"]
+    networks:
+      - app-net
 
 volumes:
   mysql_data:
 
+networks:
+  app-net:
+    driver: bridge
 
