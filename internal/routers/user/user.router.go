@@ -21,7 +21,7 @@ func (ur *UserRouter) InitUserRouter(router *gin.RouterGroup) {
 	userRouterPublic := router.Group("/user")
 	{
 		userRouterPublic.GET("/otp")
-		userRouterPublic.POST("/register")
+		userRouterPublic.POST("/register", userCtrl.RegisterUser)
 		userRouterPublic.POST("/login")
 		userRouterPublic.GET("/:id", middlewares.AuthMiddleware(), userCtrl.GetUserByID)
 	}

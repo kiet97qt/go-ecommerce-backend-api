@@ -36,3 +36,10 @@ redis:
   port: 6379
   password: ""
   db: 0
+
+smtp:
+  host: localhost
+  port: 1025
+  username: ""
+  password: ""
+  from: no-reply@example.com

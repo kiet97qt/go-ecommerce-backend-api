@@ -7,8 +7,12 @@
 package wire
 
 import (
+	"github.com/google/wire"
+	"github.com/redis/go-redis/v9"
+	"go-ecommerce-backend-api/global"
 	"go-ecommerce-backend-api/internal/controller"
 	"go-ecommerce-backend-api/internal/service"
+	"go-ecommerce-backend-api/internal/utils/sendto"
 )
 
 // Injectors from ping.wire.go:
@@ -22,7 +26,25 @@ func InitPingController() (*controller.PingController, error) {
 // Injectors from user.wire.go:
 
 func InitUserController() (*controller.UserController, error) {
-	iUserService := service.NewUserService()
+	client := newRedisClient()
+	smtpConfig := newSMTPConfig()
+	mandrillEmailSender := sendto.NewMandrillEmailSender(smtpConfig)
+	iUserService := service.NewUserService(client, mandrillEmailSender)
 	userController := controller.NewUserController(iUserService)
 	return userController, nil
 }
+
+// user.wire.go:
+
+func newRedisClient() *redis.Client {
+	return global.RedisClient
+}
+
+func newSMTPConfig() sendto.SMTPConfig {
+	return sendto.LoadSMTPConfigFromEnv()
+}
+
+var userSet = wire.NewSet(
+	newRedisClient,
+	newSMTPConfig, sendto.NewMandrillEmailSender, wire.Bind(new(sendto.EmailSender), new(*sendto.MandrillEmailSender)), service.NewUserService, controller.NewUserController,
+)

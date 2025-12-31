@@ -40,4 +40,11 @@ redis:
   password: ""
   db: 0
 
+smtp:
+  host: maildev
+  port: 1025
+  username: ""
+  password: ""
+  from: no-reply@example.com
+
 

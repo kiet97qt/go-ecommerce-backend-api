@@ -17,6 +17,8 @@ services:
         condition: service_healthy
       redis:
         condition: service_started
+      maildev:
+        condition: service_started
     networks:
       - app-net
 
@@ -47,6 +49,16 @@ services:
     ports:
       - "6379:6379"
     command: ["redis-server", "--appendonly", "yes"]
+    networks:
+      - app-net
+
+  maildev:
+    image: maildev/maildev
+    container_name: go-ecommerce-maildev
+    restart: unless-stopped
+    ports:
+      - "1025:1025" # SMTP
+      - "1080:1080" # Web UI
     networks:
       - app-net
 

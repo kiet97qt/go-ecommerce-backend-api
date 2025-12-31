@@ -1,0 +1,33 @@
+### Base URL
+@baseUrl = http://localhost:8080/v1/api
+
+### Health check
+GET {{baseUrl}}/ping
+Accept: application/json
+
+###
+
+### Register user (send OTP to email)
+POST {{baseUrl}}/user/register
+Content-Type: application/json
+Accept: application/json
+
+{
+  "email": "manapro0123@gmail.com"
+}
+
+###
+
+### Get user by ID (requires Auth middleware in real flow)
+GET {{baseUrl}}/user/1
+Accept: application/json
+Authorization: Bearer YOUR_JWT_TOKEN_HERE
+
+###
+
+### Example: call non-existing user to see error
+GET {{baseUrl}}/user/999
+Accept: application/json
+Authorization: Bearer YOUR_JWT_TOKEN_HERE
+
+
