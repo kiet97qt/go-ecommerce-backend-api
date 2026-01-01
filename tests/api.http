@@ -18,6 +18,18 @@ Accept: application/json
 
 ###
 
+### Create user after verifying OTP
+POST {{baseUrl}}/user/create
+Content-Type: application/json
+Accept: application/json
+
+{
+  "email": "manapro0123@gmail.com",
+  "otp": "825057"
+}
+
+###
+
 ### Get user by ID (requires Auth middleware in real flow)
 GET {{baseUrl}}/user/1
 Accept: application/json

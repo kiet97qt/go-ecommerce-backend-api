@@ -10,6 +10,16 @@ SELECT
 FROM users
 WHERE id = ? LIMIT 1;
 
+-- name: GetUserByUsername :one
+SELECT
+  id,
+  username,
+  is_active,
+  created_at,
+  updated_at
+FROM users
+WHERE username = ? LIMIT 1;
+
 -- name: ListUsers :many
 SELECT
   id,
@@ -27,5 +37,16 @@ SELECT
   ur.role_id
 FROM user_roles ur
 WHERE ur.user_id = ?;
+
+-- name: CreateUser :exec
+INSERT INTO users (
+  id,
+  username,
+  is_active,
+  created_at,
+  updated_at
+) VALUES (
+  ?, ?, ?, ?, ?
+);
 
 

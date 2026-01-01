@@ -20,8 +20,8 @@ func (ur *UserRouter) InitUserRouter(router *gin.RouterGroup) {
 	// public routes
 	userRouterPublic := router.Group("/user")
 	{
-		userRouterPublic.GET("/otp")
 		userRouterPublic.POST("/register", userCtrl.RegisterUser)
+		userRouterPublic.POST("/create", userCtrl.CreateUser)
 		userRouterPublic.POST("/login")
 		userRouterPublic.GET("/:id", middlewares.AuthMiddleware(), userCtrl.GetUserByID)
 	}

@@ -27,6 +27,11 @@ type RegisterUserRequest struct {
 	Email string `json:"email" binding:"required,email"`
 }
 
+type CreateUserRequest struct {
+	Email string `json:"email" binding:"required,email"`
+	OTP   string `json:"otp" binding:"required,len=6"`
+}
+
 // GetUserByID returns a user by its identifier, responding with mock data.
 func (uc *UserController) GetUserByID(ctx *gin.Context) {
 	id := ctx.Param("id")
@@ -60,5 +65,26 @@ func (uc *UserController) RegisterUser(ctx *gin.Context) {
 
 	ctx.JSON(http.StatusOK, gin.H{
 		"message": "OTP sent to email",
+	})
+}
+
+// CreateUser xác thực OTP và tạo user mới nếu email chưa tồn tại.
+func (uc *UserController) CreateUser(ctx *gin.Context) {
+	var req CreateUserRequest
+	if err := ctx.ShouldBindJSON(&req); err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	user, err := uc.userService.CreateUserWithOTP(ctx.Request.Context(), req.Email, req.OTP)
+	if err != nil {
+		logger.Error("CreateUser failed", zap.Error(err))
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	ctx.JSON(http.StatusCreated, gin.H{
+		"message": "user created",
+		"user":    user,
 	})
 }

@@ -9,6 +9,37 @@ import (
 	"context"
 )
 
+const createUser = `-- name: CreateUser :exec
+INSERT INTO users (
+  id,
+  username,
+  is_active,
+  created_at,
+  updated_at
+) VALUES (
+  ?, ?, ?, ?, ?
+)
+`
+
+type CreateUserParams struct {
+	ID        string
+	Username  string
+	IsActive  bool
+	CreatedAt int64
+	UpdatedAt int64
+}
+
+func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) error {
+	_, err := q.db.ExecContext(ctx, createUser,
+		arg.ID,
+		arg.Username,
+		arg.IsActive,
+		arg.CreatedAt,
+		arg.UpdatedAt,
+	)
+	return err
+}
+
 const getUserByID = `-- name: GetUserByID :one
 
 SELECT
@@ -24,6 +55,30 @@ WHERE id = ? LIMIT 1
 // Basic queries for sqlc to generate models from the users/roles tables
 func (q *Queries) GetUserByID(ctx context.Context, id string) (User, error) {
 	row := q.db.QueryRowContext(ctx, getUserByID, id)
+	var i User
+	err := row.Scan(
+		&i.ID,
+		&i.Username,
+		&i.IsActive,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
+}
+
+const getUserByUsername = `-- name: GetUserByUsername :one
+SELECT
+  id,
+  username,
+  is_active,
+  created_at,
+  updated_at
+FROM users
+WHERE username = ? LIMIT 1
+`
+
+func (q *Queries) GetUserByUsername(ctx context.Context, username string) (User, error) {
+	row := q.db.QueryRowContext(ctx, getUserByUsername, username)
 	var i User
 	err := row.Scan(
 		&i.ID,
