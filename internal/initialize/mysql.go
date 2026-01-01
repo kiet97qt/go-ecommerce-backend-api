@@ -8,7 +8,6 @@ import (
 
 	"go.uber.org/zap"
 	"gorm.io/driver/mysql"
-	"gorm.io/gen"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
 )
@@ -61,27 +60,4 @@ func InitMySQL() {
 		zap.String("db", mysqlCfg.DBName),
 	)
 	global.DB = db
-}
-
-func GenerateModels() {
-	if global.Config == nil {
-		panic("config is nil, load config before generating models")
-	}
-
-	g := gen.NewGenerator(gen.Config{
-		OutPath:      "internal/models/db",
-		ModelPkgPath: "internal/models/db",
-		Mode:         gen.WithoutContext | gen.WithDefaultQuery | gen.WithQueryInterface,
-	})
-
-	g.UseDB(global.DB)
-
-	// Generate model cho các bảng mong muốn
-	g.GenerateModel("users")
-	g.GenerateModel("roles")
-	g.GenerateModel("user_roles")
-
-	// g.ApplyBasic(user, role, userRole)
-
-	g.Execute()
 }

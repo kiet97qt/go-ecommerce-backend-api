@@ -1,6 +1,6 @@
 ## Hướng dẫn chạy migration
 
-Project này đang dùng các file `.sql` trong thư mục `migrations/` (ví dụ `1_create_table_up.sql`, `2_create_users_roles_up.sql`) để quản lý schema database.
+Project này đang dùng các file `.sql` trong thư mục `sql/schema/` (ví dụ `1_create_users_roles_up.sql`) để quản lý schema database.
 
 Bạn có thể dùng một trong các tool phổ biến sau để apply migration.
 
@@ -45,7 +45,7 @@ go install github.com/pressly/goose/v3/cmd/goose@latest
 ```bash
 cd /Users/kietle/Projects/go-ecommerce-backend-api
 
-goose -dir ./migrations \
+goose -dir ./sql/schema \
   mysql "root:root@tcp(localhost:33306)/shopDev" up
 ```
 
@@ -54,14 +54,14 @@ goose -dir ./migrations \
 - Rollback 1 step:
 
 ```bash
-goose -dir ./migrations \
+goose -dir ./sql/schema \
   mysql "root:root@tcp(localhost:33306)/shopDev" down
 ```
 
 - Xem trạng thái các migration:
 
 ```bash
-goose -dir ./migrations \
+goose -dir ./sql/schema \
   mysql "root:root@tcp(localhost:33306)/shopDev" status
 ```
 
@@ -81,7 +81,7 @@ go install github.com/golang-migrate/migrate/v4/cmd/migrate@latest
 - Ví dụ lệnh (đứng ở root project):
 
 ```bash
-migrate -source "file://migrations" \
+migrate -source "file://sql/schema" \
   -database "mysql://root:root@tcp(localhost:33306)/shopDev" up
 ```
 
